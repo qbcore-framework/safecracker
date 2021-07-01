@@ -149,9 +149,9 @@ function EndMinigame(won)
 	SafeCracker.MinigameOpen = false
 	if won then 
 		PlaySoundFrontend(SafeCracker.SoundID, SafeCracker.Config.SafeFinalSound, SafeCracker.Config.SafeSoundset, true)
-		QBCore.Functions.Notify("Kluis geopend..", "success")
+		QBCore.Functions.Notify("Safe opened..", "success")
 	else
-		QBCore.Functions.Notify("Kluis gefaald..", "error")
+		QBCore.Functions.Notify("Safe opening failed..", "error")
 	end
   	TriggerEvent('SafeCracker:EndMinigame', won)
 	FreezeEntityPosition(GetPlayerPed(-1), false)
