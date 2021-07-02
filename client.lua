@@ -1,15 +1,3 @@
-QBCore = nil
-
-Citizen.CreateThread(function()
-	while true do
-		Citizen.Wait(10)
-		if QBCore == nil then
-			TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-			Citizen.Wait(200)
-		end
-	end
-end)
-
 function StartMinigame(combo)
 	--if not self or not SafeCracker.Config then return; end
 	local Coords = GetEntityCoords(GetPlayerPed(-1), false)
