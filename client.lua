@@ -40,9 +40,9 @@ function InputCheck()
 	--if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen then return; end	
 	local leftKeyPressed 	= IsControlPressed( 0, Keys[ 'LEFT' ] ) 	or 0
 	local rightKeyPressed 	= IsControlPressed( 0, Keys[ 'RIGHT' ] )	or 0
-	if 		IsControlPressed( 0, Keys[ 'ESC' ] ) 			then EndMinigame(false); end
-	if 		IsControlPressed( 0, Keys[ 'Z' ] ) 			then rotSpeed 	=   0.1; modifier = 33;
-    elseif 	IsControlPressed( 0, Keys[ 'LEFTSHIFT' ] )	then rotSpeed 	=   1.0; modifier = 50; 
+	if 		IsControlPressed(0, 200) 			then EndMinigame(false); end
+	if 		IsControlPressed(0, 20) 			then rotSpeed 	=   0.1; modifier = 33;
+    elseif 	IsControlPressed(0, 21)	then rotSpeed 	=   1.0; modifier = 50; 
     else 																 rotSpeed	=   0.4; modifier = 90; end
 
     local lockRotation = math.max(modifier / rotSpeed, 0.1)
