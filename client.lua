@@ -1,14 +1,14 @@
 function StartMinigame(combo)
 	--if not self or not SafeCracker.Config then return; end
-	local Coords = GetEntityCoords(GetPlayerPed(-1), false)
+	local Coords = GetEntityCoords(PlayerPedId(), false)
 	local Object = GetClosestObjectOfType(Coords.x, Coords.y, Coords.z, 5.0, GetHashKey("v_ilev_gangsafedoor"), false, false, false)
 	local ObjectHeading = GetEntityHeading(Object)
 	local txd = CreateRuntimeTxd(SafeCracker.Config.TextureDict)
 	for i = 1, 2 do CreateRuntimeTextureFromImage(txd, tostring(i), "LockPart" .. i .. ".PNG") end
 	loadAnimDict("mini@safe_cracking")
-	TaskPlayAnim(GetPlayerPed(-1), "mini@safe_cracking", "dial_turn_anti_fast_1", 3.0, 3.0, -1, 49, 0, 0, 0, 0)
-	FreezeEntityPosition(GetPlayerPed(-1), true)
-	SetEntityHeading(GetPlayerPed(-1), ObjectHeading)
+	TaskPlayAnim(PlayerPedId(), "mini@safe_cracking", "dial_turn_anti_fast_1", 3.0, 3.0, -1, 49, 0, 0, 0, 0)
+	FreezeEntityPosition(PlayerPedId(), true)
+	SetEntityHeading(PlayerPedId(), ObjectHeading)
 	SafeCracker.MinigameOpen = true
 	SafeCracker.SoundID 	  = GetSoundId() 
 	SafeCracker.Timer 		  = GetGameTimer()
@@ -31,7 +31,7 @@ function Update(combo)
 	Citizen.CreateThread(function() HandleMinigame(combo); end)
 	while SafeCracker.MinigameOpen do
 		InputCheck()  
-		if IsEntityDead(GetPlayerPed(PlayerId())) then EndMinigame(false, false); end
+		if IsEntityDead(PlayerPedId())) then EndMinigame(false, false); end
 		Citizen.Wait(0)
 	end
 end
@@ -142,8 +142,8 @@ function EndMinigame(won)
 		QBCore.Functions.Notify("Safe opening failed..", "error")
 	end
   	TriggerEvent('SafeCracker:EndMinigame', won)
-	FreezeEntityPosition(GetPlayerPed(-1), false)
-	ClearPedTasksImmediately(GetPlayerPed(-1))
+	FreezeEntityPosition(PlayerPedId(), false)
+	ClearPedTasksImmediately(PlayerPedId())
 end
 
 RegisterNetEvent('SafeCracker:EndGame')
