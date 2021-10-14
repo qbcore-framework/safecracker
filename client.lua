@@ -1,14 +1,15 @@
 function StartMinigame(combo)
 	--if not self or not SafeCracker.Config then return; end
-	local Coords = GetEntityCoords(GetPlayerPed(-1), false)
+	local ped = PlayerPedId()
+	local Coords = GetEntityCoords(ped, false)
 	local Object = GetClosestObjectOfType(Coords.x, Coords.y, Coords.z, 5.0, GetHashKey("v_ilev_gangsafedoor"), false, false, false)
 	local ObjectHeading = GetEntityHeading(Object)
 	local txd = CreateRuntimeTxd(SafeCracker.Config.TextureDict)
 	for i = 1, 2 do CreateRuntimeTextureFromImage(txd, tostring(i), "LockPart" .. i .. ".PNG") end
 	loadAnimDict("mini@safe_cracking")
-	TaskPlayAnim(GetPlayerPed(-1), "mini@safe_cracking", "dial_turn_anti_fast_1", 3.0, 3.0, -1, 49, 0, 0, 0, 0)
-	FreezeEntityPosition(GetPlayerPed(-1), true)
-	SetEntityHeading(GetPlayerPed(-1), ObjectHeading)
+	TaskPlayAnim(ped, "mini@safe_cracking", "dial_turn_anti_fast_1", 3.0, 3.0, -1, 49, 0, 0, 0, 0)
+	FreezeEntityPosition(ped, true)
+	SetEntityHeading(ped, ObjectHeading)
 	SafeCracker.MinigameOpen = true
 	SafeCracker.SoundID 	  = GetSoundId() 
 	SafeCracker.Timer 		  = GetGameTimer()
@@ -21,8 +22,7 @@ function StartMinigame(combo)
 	end)
 end
 
-RegisterNetEvent('SafeCracker:StartMinigame')
-AddEventHandler('SafeCracker:StartMinigame', function(combo)
+RegisterNetEvent('SafeCracker:StartMinigame', function(combo)
 	StartMinigame(combo); 
 end)
 
@@ -31,7 +31,7 @@ function Update(combo)
 	Citizen.CreateThread(function() HandleMinigame(combo); end)
 	while SafeCracker.MinigameOpen do
 		InputCheck()  
-		if IsEntityDead(GetPlayerPed(PlayerId())) then EndMinigame(false, false); end
+		if IsEntityDead(PlayerPedId()) then EndMinigame(false, false); end
 		Citizen.Wait(0)
 	end
 end
@@ -133,7 +133,7 @@ end
 
 function EndMinigame(won)
 	--if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen then return; end
-
+	local ped = PlayerPedId()
 	SafeCracker.MinigameOpen = false
 	if won then 
 		PlaySoundFrontend(SafeCracker.SoundID, SafeCracker.Config.SafeFinalSound, SafeCracker.Config.SafeSoundset, true)
@@ -142,12 +142,11 @@ function EndMinigame(won)
 		QBCore.Functions.Notify("Safe opening failed..", "error")
 	end
   	TriggerEvent('SafeCracker:EndMinigame', won)
-	FreezeEntityPosition(GetPlayerPed(-1), false)
-	ClearPedTasksImmediately(GetPlayerPed(-1))
+	FreezeEntityPosition(ped, false)
+	ClearPedTasksImmediately(ped)
 end
 
-RegisterNetEvent('SafeCracker:EndGame')
-AddEventHandler('SafeCracker:EndGame', function() EndMinigame(); end)
+RegisterNetEvent('SafeCracker:EndGame', function() EndMinigame(); end)
 
 function OpenSafeDoor()
   Citizen.CreateThread(function(...)
@@ -222,8 +221,7 @@ function DelSafe()
 	for k,v in pairs(SafeCracker.Objects) do DeleteObject(v); end
 end
 
-RegisterNetEvent('SafeCracker:SpawnSafe')
-AddEventHandler('SafeCracker:SpawnSafe', function(tab, pos, heading, cb) if cb then cb(SpawnSafeObject(tab,pos,heading)) else SpawnSafeObject(tab,pos,heading); end; end)
+RegisterNetEvent('SafeCracker:SpawnSafe', function(tab, pos, heading, cb) if cb then cb(SpawnSafeObject(tab,pos,heading)) else SpawnSafeObject(tab,pos,heading); end; end)
 
 function LoadModelTable(table)
   if type(table) ~= 'table' then return false; end
