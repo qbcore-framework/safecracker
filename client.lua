@@ -31,7 +31,7 @@ function Update(combo)
 	Citizen.CreateThread(function() HandleMinigame(combo); end)
 	while SafeCracker.MinigameOpen do
 		InputCheck()  
-		if IsEntityDead(PlayerPedId())) then EndMinigame(false, false); end
+		if IsEntityDead(PlayerPedId()) then EndMinigame(false, false); end
 		Citizen.Wait(0)
 	end
 end
