@@ -1,7 +1,7 @@
 function StartMinigame(combo)
 	--if not self or not SafeCracker.Config then return; end
 	local Coords = GetEntityCoords(PlayerPedId(), false)
-	local Object = GetClosestObjectOfType(Coords.x, Coords.y, Coords.z, 5.0, GetHashKey("v_ilev_gangsafedoor"), false, false, false)
+	local Object = GetClosestObjectOfType(Coords.x, Coords.y, Coords.z, 5.0, `v_ilev_gangsafedoor`, false, false, false)
 	local ObjectHeading = GetEntityHeading(Object)
 	local txd = CreateRuntimeTxd(SafeCracker.Config.TextureDict)
 	for i = 1, 2 do CreateRuntimeTextureFromImage(txd, tostring(i), "LockPart" .. i .. ".PNG") end
