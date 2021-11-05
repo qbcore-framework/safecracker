@@ -1,7 +1,7 @@
 function StartMinigame(combo)
 	--if not self or not SafeCracker.Config then return; end
 	local Coords = GetEntityCoords(PlayerPedId(), false)
-	local Object = GetClosestObjectOfType(Coords.x, Coords.y, Coords.z, 5.0, GetHashKey("v_ilev_gangsafedoor"), false, false, false)
+	local Object = GetClosestObjectOfType(Coords.x, Coords.y, Coords.z, 5.0, `v_ilev_gangsafedoor`, false, false, false)
 	local ObjectHeading = GetEntityHeading(Object)
 	local txd = CreateRuntimeTxd(SafeCracker.Config.TextureDict)
 	for i = 1, 2 do CreateRuntimeTextureFromImage(txd, tostring(i), "LockPart" .. i .. ".PNG") end
@@ -37,14 +37,23 @@ function Update(combo)
 end
 
 function InputCheck()
-	--if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen then return; end	
-	local leftKeyPressed 	= IsControlPressed( 0, Keys[ 'LEFT' ] ) 	or 0
-	local rightKeyPressed 	= IsControlPressed( 0, Keys[ 'RIGHT' ] )	or 0
-	if 		IsControlPressed( 0, Keys[ 'ESC' ] ) 			then EndMinigame(false); end
-	if 		IsControlPressed( 0, Keys[ 'Z' ] ) 			then rotSpeed 	=   0.1; modifier = 33;
-    elseif 	IsControlPressed( 0, Keys[ 'LEFTSHIFT' ] )	then rotSpeed 	=   1.0; modifier = 50; 
-    else 																 rotSpeed	=   0.4; modifier = 90; end
-
+    --if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen then return; end	
+    local leftKeyPressed = IsControlPressed( 0, 174) or 0 -- Left
+    local rightKeyPressed = IsControlPressed( 0, 175) or 0 -- Right
+    if IsControlPressed( 0, 322) then -- Esc
+        EndMinigame(false)
+    end
+    if IsControlPressed( 0, 20) then -- Z
+        rotSpeed = 0.1
+        modifier = 33
+    elseif IsControlPressed( 0, 21) then -- Left Shift
+        rotSpeed = 1.0
+        modifier = 50
+    else
+        rotSpeed = 0.4
+        modifier = 90
+    end
+	
     local lockRotation = math.max(modifier / rotSpeed, 0.1)
 
 	if leftKeyPressed ~= 0 or rightKeyPressed ~= 0 then
