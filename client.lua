@@ -1,3 +1,5 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 function StartMinigame(combo)
 	--if not self or not SafeCracker.Config then return; end
 	local Coords = GetEntityCoords(PlayerPedId(), false)
