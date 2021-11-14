@@ -1,7 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
 function StartMinigame(combo)
-	--if not self or not SafeCracker.Config then return; end
 	local Coords = GetEntityCoords(PlayerPedId(), false)
 	local Object = GetClosestObjectOfType(Coords.x, Coords.y, Coords.z, 5.0, `v_ilev_gangsafedoor`, false, false, false)
 	local ObjectHeading = GetEntityHeading(Object)
@@ -18,28 +17,25 @@ function StartMinigame(combo)
 
 	if not RequestAmbientAudioBank(SafeCracker.Config.AudioBank, false) then RequestAmbientAudioBank(SafeCracker.Config.AudioBankName, false); end
 	if not HasStreamedTextureDictLoaded(SafeCracker.Config.TextureDict, false) then RequestStreamedTextureDict(SafeCracker.Config.TextureDict, false); end
-	Citizen.CreateThread(function() 
+	CreateThread(function() 
 		Update(combo)
 	end)
 end
 
-RegisterNetEvent('SafeCracker:StartMinigame')
-AddEventHandler('SafeCracker:StartMinigame', function(combo)
+RegisterNetEvent('SafeCracker:StartMinigame', function(combo)
 	StartMinigame(combo); 
 end)
 
 function Update(combo)
-	--if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen or not SafeCracker.cS or not SafeCracker.dS then return; end	
-	Citizen.CreateThread(function() HandleMinigame(combo); end)
+	CreateThread(function() HandleMinigame(combo); end)
 	while SafeCracker.MinigameOpen do
 		InputCheck()  
 		if IsEntityDead(PlayerPedId()) then EndMinigame(false, false); end
-		Citizen.Wait(0)
+		Wait(0)
 	end
 end
 
 function InputCheck()
-    --if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen then return; end	
     local leftKeyPressed = IsControlPressed( 0, 174) or 0 -- Left
     local rightKeyPressed = IsControlPressed( 0, 175) or 0 -- Right
     if IsControlPressed( 0, 322) then -- Esc
@@ -70,10 +66,7 @@ function InputCheck()
 end
 
 function HandleMinigame(combo) 
-	--if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen then return; end
-
 	local lockRot = math.random(150.00, 300.00)	
-
 	local lockNumbers 	 = {}
 	local correctGuesses = {}
 	lockNumbers[1] = combo[1]
@@ -105,9 +98,8 @@ function HandleMinigame(combo)
     local hasRandomized	= false
 
     SafeCracker.LockRotation = 0.0 + lockRot
-								
 	while SafeCracker.MinigameOpen do	
-		--				Texture Dictionary, Texture Name, xPos, yPos, xSize, ySize, 		   Heading,   R,   G,   B,   A,
+		--Texture Dictionary, Texture Name, xPos, yPos, xSize, ySize, 		   Heading,   R,   G,   B,   A,
 		DrawSprite(SafeCracker.Config.TextureDict, 		 "1",  0.8,  0.5,  0.15,  0.26, -SafeCracker.LockRotation, 255, 255, 255, 255)
 		DrawSprite(SafeCracker.Config.TextureDict, 		 "2",  0.8,  0.5, 0.176, 0.306, 		      -0.0, 255, 255, 255, 255)	
 
@@ -115,9 +107,9 @@ function HandleMinigame(combo)
 
 		local lockVal = math.floor(SafeCracker.LockRotation)
 
-		if 		correctCount > 1 and 	correctCount < 6 and lockVal + (SafeCracker.Config.LockTolerance * 3.60) < lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] < lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
-		elseif 	correctCount > 1 and 	correctCount < 6 and lockVal - (SafeCracker.Config.LockTolerance * 3.60) > lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] > lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
-		elseif 	correctCount > 5 then 	EndMinigame(true)
+		if correctCount > 1 and correctCount < 6 and lockVal + (SafeCracker.Config.LockTolerance * 3.60) < lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] < lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
+		elseif correctCount > 1 and correctCount < 6 and lockVal - (SafeCracker.Config.LockTolerance * 3.60) > lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] > lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
+		elseif correctCount > 5 then EndMinigame(true)
 		end
 
 		for k,v in pairs(lockNumbers) do
@@ -137,14 +129,12 @@ function HandleMinigame(combo)
 				end   				  			
 			end
 		end
-		Citizen.Wait(0)
+		Wait(0)
 	end
 end
 
 
 function EndMinigame(won)
-	--if not self or not SafeCracker.Config or not SafeCracker.MinigameOpen then return; end
-
 	SafeCracker.MinigameOpen = false
 	if won then 
 		PlaySoundFrontend(SafeCracker.SoundID, SafeCracker.Config.SafeFinalSound, SafeCracker.Config.SafeSoundset, true)
@@ -157,11 +147,12 @@ function EndMinigame(won)
 	ClearPedTasksImmediately(PlayerPedId())
 end
 
-RegisterNetEvent('SafeCracker:EndGame')
-AddEventHandler('SafeCracker:EndGame', function() EndMinigame(); end)
+RegisterNetEvent('SafeCracker:EndGame', function()
+	EndMinigame();
+end)
 
 function OpenSafeDoor()
-  Citizen.CreateThread(function(...)
+  CreateThread(function(...)
     local objs = {}
     local doorHash = (GetHashKey(SafeCracker.SafeModels.Door) % 0x100000000)
     for k,v in pairs(objs) do
@@ -179,7 +170,7 @@ function OpenSafeDoor()
           tick = tick + 1
           SetEntityHeading(v, GetEntityHeading(v) + 0.3)
           SetEntityCoords(v, doorPosition, false, false, false, false)
-          Citizen.Wait(0)
+          Wait(0)
         end
 
         if not (GetEntityHeading(v) >= targetHeading) then SetEntityHeading(v, targetHeading); end
@@ -191,7 +182,7 @@ end
 function loadAnimDict( dict )
     while ( not HasAnimDictLoaded( dict ) ) do
         RequestAnimDict( dict )
-        Citizen.Wait( 5 )
+        Wait( 5 )
     end
 end 
 
@@ -233,8 +224,8 @@ function DelSafe()
 	for k,v in pairs(SafeCracker.Objects) do DeleteObject(v); end
 end
 
-RegisterNetEvent('SafeCracker:SpawnSafe')
-AddEventHandler('SafeCracker:SpawnSafe', function(tab, pos, heading, cb) if cb then cb(SpawnSafeObject(tab,pos,heading)) else SpawnSafeObject(tab,pos,heading); end; end)
+RegisterNetEvent('SafeCracker:SpawnSafe', function(tab, pos, heading, cb)
+if cb then cb(SpawnSafeObject(tab,pos,heading)) else SpawnSafeObject(tab,pos,heading); end; end)
 
 function LoadModelTable(table)
   if type(table) ~= 'table' then return false; end
@@ -243,7 +234,7 @@ function LoadModelTable(table)
       local hk = GetHashKey(v) % 0x100000000
       while not HasModelLoaded(hk) do
         RequestModel(hk)
-        Citizen.Wait(0)
+        Wait(0)
       end
     end
   end
