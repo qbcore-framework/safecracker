@@ -66,14 +66,14 @@ function InputCheck()
 end
 
 function HandleMinigame(combo) 
-	local lockRot = math.random(150.00, 300.00)	
 	local lockNumbers 	 = {}
 	local correctGuesses = {}
-	lockNumbers[1] = combo[1]
-	lockNumbers[2] = combo[2]
-	lockNumbers[3] = combo[3]
-	lockNumbers[4] = combo[4]
-	lockNumbers[5] = combo[5]
+	lockNumbers = combo
+	if lockNumbers[1] <= 149 then
+		lockRot = math.random(150, 359)
+	else
+		lockRot = math.random(1, 149)
+	end
 
 	-----------------------
 	-- REDO LOCK NUMBERS --
@@ -107,9 +107,9 @@ function HandleMinigame(combo)
 
 		local lockVal = math.floor(SafeCracker.LockRotation)
 
-		if correctCount > 1 and correctCount < 6 and lockVal + (SafeCracker.Config.LockTolerance * 3.60) < lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] < lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
-		elseif correctCount > 1 and correctCount < 6 and lockVal - (SafeCracker.Config.LockTolerance * 3.60) > lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] > lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
-		elseif correctCount > 5 then EndMinigame(true)
+		if correctCount > 1 and correctCount < (#lockNumbers + 1) and lockVal + (SafeCracker.Config.LockTolerance * 3.60) < lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] < lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
+		elseif correctCount > 1 and correctCount < (#lockNumbers + 1) and lockVal - (SafeCracker.Config.LockTolerance * 3.60) > lockNumbers[correctCount - 1] and lockNumbers[correctCount - 1] > lockNumbers[correctCount] then EndMinigame(false); SafeCracker.MinigameOpen = false; 
+		elseif correctCount > #lockNumbers then EndMinigame(true)
 		end
 
 		for k,v in pairs(lockNumbers) do
